@@ -11,8 +11,8 @@ We evaluate across two concept categories — **fears** (30 concepts) and **pers
 ```
 completion_supervised_steering/
 ├── data_400x2/                  # Datasets and concept lists
-│   ├── class_0.txt              # 200 label-0 statements (neutral prompts)
-│   ├── class_1.txt              # 200 label-1 statements (concept-prefixed prompts)
+│   ├── class_0.txt              # 200 statements
+│   ├── class_1.txt              # 200 statements (additional)
 │   ├── fear_30.txt              # List of 30 fear concepts
 │   ├── persona_30.txt           # List of 30 persona concepts
 │   ├── fears.txt                # Extended fear list (for reference)
