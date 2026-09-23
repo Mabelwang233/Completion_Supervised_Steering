@@ -1,0 +1,122 @@
+[
+  {
+    "persona": "Leonardo da Vinci",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_leonardo_da_vinci.json"
+  },
+  {
+    "persona": "Isaac Newton",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_isaac_newton.json"
+  },
+  {
+    "persona": "Nikola Tesla",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_nikola_tesla.json"
+  },
+  {
+    "persona": "Alan Turing",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_alan_turing.json"
+  },
+  {
+    "persona": "Sun Tzu",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_sun_tzu.json"
+  },
+  {
+    "persona": "Sigmund Freud",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_sigmund_freud.json"
+  },
+  {
+    "persona": "Barack Obama",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_barack_obama.json"
+  },
+  {
+    "persona": "Avicenna",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_avicenna.json"
+  },
+  {
+    "persona": "Stephen Hawking",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_stephen_hawking.json"
+  },
+  {
+    "persona": "Elon Musk",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_elon_musk.json"
+  },
+  {
+    "persona": "Mary Wollstonecraft",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_mary_wollstonecraft.json"
+  },
+  {
+    "persona": "Max Planck",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_max_planck.json"
+  },
+  {
+    "persona": "Alexandria Ocasio-Cortez",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_alexandria_ocasio-cortez.json"
+  },
+  {
+    "persona": "Fei-Fei Li",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_fei-fei_li.json"
+  },
+  {
+    "persona": "Carl Sagan",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_carl_sagan.json"
+  },
+  {
+    "persona": "Karl Marx",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_karl_marx.json"
+  },
+  {
+    "persona": "Amartya Sen",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_amartya_sen.json"
+  },
+  {
+    "persona": "Erwin Schr\u00f6dinger",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_erwin_schr\u00f6dinger.json"
+  },
+  {
+    "persona": "Pranav Mistry",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_pranav_mistry.json"
+  },
+  {
+    "persona": "Jennifer Doudna",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_jennifer_doudna.json"
+  },
+  {
+    "persona": "Albert Einstein",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_albert_einstein.json"
+  },
+  {
+    "persona": "Satya Nadella",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_satya_nadella.json"
+  },
+  {
+    "persona": "Zeynep Tufekci",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_zeynep_tufekci.json"
+  },
+  {
+    "persona": "Adam Smith",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_adam_smith.json"
+  },
+  {
+    "persona": "Thomas Aquinas",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_thomas_aquinas.json"
+  },
+  {
+    "persona": "Richard Feynman",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_richard_feynman.json"
+  },
+  {
+    "persona": "Judith Butler",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_judith_butler.json"
+  },
+  {
+    "persona": "Hannah Arendt",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_hannah_arendt.json"
+  },
+  {
+    "persona": "Claudia Goldin",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_claudia_goldin.json"
+  },
+  {
+    "persona": "David Hume",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/personas/persona_david_hume.json"
+  }
+]
