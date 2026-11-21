@@ -63,6 +63,11 @@ def run_one_concept(fear, dataset_path, out_dir, args):
 
     print(f"\n{'='*60}\nFEAR: {fear}  |  STRATEGY: {args.completion_strategy}  |  SOURCE: {args.completion_source}\n{'='*60}")
 
+    # Finished concept: skip before step 3, which would re-extract the deleted trajectories.pt
+    if os.path.exists(os.path.join(strategy_dir, "summary.csv")):
+        print(f"  {os.path.join(strategy_dir, 'summary.csv')} exists, all steps done, skipping.")
+        return
+
     print("\n[1/9] train baselines (RFM, diff-means, all layers -- shared across strategies and sources)")
     if not os.path.exists(baseline_path):
         baselines.train_baselines(
@@ -160,6 +165,11 @@ def run_one_concept(fear, dataset_path, out_dir, args):
 
     print(f"\n[9/9] steer + evaluate (alpha sweep, fear judge, "
           f"max {args.eval_gen_tokens} tokens/response, 7 methods)")
+    # summary.csv is written only after the whole sweep is judged, so it marks a finished eval
+    summary_path = os.path.join(strategy_dir, "summary.csv")
+    if os.path.exists(summary_path):
+        print(f"  {summary_path} exists, skipping.")
+        return
     fear_steer_and_evaluate.run_evaluation(
         dataset_path, baseline_path, None, strategy_dir, args.model,
         args.alpha_grid, judge_model=args.judge_model, max_new_tokens=args.eval_gen_tokens,

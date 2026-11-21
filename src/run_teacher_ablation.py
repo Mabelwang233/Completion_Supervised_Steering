@@ -147,6 +147,8 @@ def run_one_concept(concept_name, concept_key, dataset_path, teacher_dataset_pat
         try:
             if concept_key == "persona":
                 import controller_steer_and_evaluate as ctrl_eval_mod
+            elif concept_key == "expert":
+                import expert_controller_steer_and_evaluate as ctrl_eval_mod
             else:
                 import fear_controller_steer_and_evaluate as ctrl_eval_mod
             ctrl_eval_mod.run_evaluation(
@@ -224,6 +226,8 @@ def run_one_concept(concept_name, concept_key, dataset_path, teacher_dataset_pat
 
                 if concept_key == "persona":
                     from persona_judge import judge_response as _judge
+                elif concept_key == "expert":
+                    from expert_judge import judge_response as _judge
                 else:
                     from fear_judge import judge_response as _judge
 
@@ -329,6 +333,8 @@ def run_one_concept(concept_name, concept_key, dataset_path, teacher_dataset_pat
     else:
         if concept_key == "persona":
             import persona_steer_and_evaluate as evaluator
+        elif concept_key == "expert":
+            import expert_steer_and_evaluate as evaluator
         else:
             import fear_steer_and_evaluate as evaluator
 
@@ -428,6 +434,8 @@ def run_one_concept(concept_name, concept_key, dataset_path, teacher_dataset_pat
 
                 if concept_key == "persona":
                     from persona_judge import judge_response
+                elif concept_key == "expert":
+                    from expert_judge import judge_response
                 else:
                     from fear_judge import judge_response
 
@@ -466,7 +474,7 @@ def main():
     p.add_argument("--ablation_manifest",              required=True)
     p.add_argument("--teacher_datasets_dir",           required=True)
     p.add_argument("--category",                       required=True,
-                   choices=["persona", "fear"])
+                   choices=["persona", "fear", "expert"])
     p.add_argument("--model",                          required=True)
     p.add_argument("--model_tag",                      required=True,
                    help="short tag matching format_teacher_datasets.py output (e.g. 'llama', 'qwen')")
@@ -504,8 +512,8 @@ def main():
     with open(args.ablation_manifest) as f:
         ablation_manifest = json.load(f)
 
-    category_key   = "personas" if args.category == "persona" else "fears"
-    concept_key    = args.category  # "persona" or "fear"
+    category_key   = f"{args.category}s"  # "personas", "fears" or "experts"
+    concept_key    = args.category  # "persona", "fear" or "expert"
     category_dir   = os.path.join(args.teacher_datasets_dir,
                                   category_key, args.model_tag)
 

@@ -84,12 +84,14 @@ def call_teacher(client, prompt_text, teacher_model, api_max_tokens,
     return "", max_retries
 
 
+CATEGORIES = [("personas", "persona"), ("fears", "fear"), ("experts", "expert")]
+
+
 def collect_unique_prompts(ablation_manifest):
     """Collect all unique prompt strings across all selected concepts."""
     unique = {}  # prompt_text -> list of (category, concept_name, label, idx)
-    for category in ("personas", "fears"):
-        key = "persona" if category == "personas" else "fear"
-        for entry in ablation_manifest[category]:
+    for category, key in CATEGORIES:
+        for entry in ablation_manifest.get(category, []):
             concept_name = entry[key]
             dataset_path = entry["path"]
             with open(dataset_path) as f:

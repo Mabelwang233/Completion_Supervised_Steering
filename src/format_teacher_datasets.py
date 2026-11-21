@@ -138,8 +138,8 @@ def main():
         )
 
     all_ok = True
-    for category, key in [("personas", "persona"), ("fears", "fear")]:
-        for entry in ablation_manifest[category]:
+    for category, key in [("personas", "persona"), ("fears", "fear"), ("experts", "expert")]:
+        for entry in ablation_manifest.get(category, []):
             concept_name = entry[key]
             dataset_path = entry["path"]
             slug = concept_name.lower().replace(" ", "_").replace(".", "").replace(",", "")

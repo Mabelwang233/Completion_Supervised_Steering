@@ -262,7 +262,8 @@ def train(args):
     with open(args.dataset) as f:
         dataset = json.load(f)
 
-    concept  = dataset.get("concept") or dataset.get("persona") or dataset.get("fear")
+    concept  = (dataset.get("concept") or dataset.get("persona") or dataset.get("fear")
+                or dataset.get("expert"))
 
     all_pairs = build_pairs(dataset)
     random.shuffle(all_pairs)

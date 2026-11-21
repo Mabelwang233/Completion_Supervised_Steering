@@ -1,0 +1,122 @@
+[
+  {
+    "expert": "Philosopher",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_philosopher.json"
+  },
+  {
+    "expert": "Epistemologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_epistemologist.json"
+  },
+  {
+    "expert": "Aesthetician",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_aesthetician.json"
+  },
+  {
+    "expert": "Medievalist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_medievalist.json"
+  },
+  {
+    "expert": "Legal Theorist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_legal_theorist.json"
+  },
+  {
+    "expert": "Economic Historian",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_economic_historian.json"
+  },
+  {
+    "expert": "Sociologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_sociologist.json"
+  },
+  {
+    "expert": "Computational Biologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_computational_biologist.json"
+  },
+  {
+    "expert": "Theoretical Physicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_theoretical_physicist.json"
+  },
+  {
+    "expert": "Experimental Physicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_experimental_physicist.json"
+  },
+  {
+    "expert": "Plasma Physicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_plasma_physicist.json"
+  },
+  {
+    "expert": "Geophysicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_geophysicist.json"
+  },
+  {
+    "expert": "Ecologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_ecologist.json"
+  },
+  {
+    "expert": "Algebraic Topologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_algebraic_topologist.json"
+  },
+  {
+    "expert": "Complexity Theorist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_complexity_theorist.json"
+  },
+  {
+    "expert": "Condensed Matter Physicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_condensed_matter_physicist.json"
+  },
+  {
+    "expert": "Molecular Biologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_molecular_biologist.json"
+  },
+  {
+    "expert": "Astrophysicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_astrophysicist.json"
+  },
+  {
+    "expert": "Planetary Scientist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_planetary_scientist.json"
+  },
+  {
+    "expert": "Materials Scientist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_materials_scientist.json"
+  },
+  {
+    "expert": "Computational Neuroscientist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_computational_neuroscientist.json"
+  },
+  {
+    "expert": "Combinatorial Optimization Researcher",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_combinatorial_optimization_researcher.json"
+  },
+  {
+    "expert": "Bioinformatician",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_bioinformatician.json"
+  },
+  {
+    "expert": "Epigeneticist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_epigeneticist.json"
+  },
+  {
+    "expert": "Pharmacogenomicist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_pharmacogenomicist.json"
+  },
+  {
+    "expert": "Cognitive Neuroscientist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_cognitive_neuroscientist.json"
+  },
+  {
+    "expert": "Developmental Psychologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_developmental_psychologist.json"
+  },
+  {
+    "expert": "Social Network Analyst",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_social_network_analyst.json"
+  },
+  {
+    "expert": "Epidemiologist",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_epidemiologist.json"
+  },
+  {
+    "expert": "Bayesian Statistician",
+    "path": "/data/mabel/projects/steering/update_seqrfm_v2/data_400x2/experts/expert_bayesian_statistician.json"
+  }
+]

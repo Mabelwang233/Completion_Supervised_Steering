@@ -2,6 +2,7 @@
 torch>=2.1.0
 transformers>=4.40.0
 accelerate>=0.27.0
+bitsandbytes>=0.43.0   # Llama-3.3-70B 4-bit
 datasets>=2.18.0
 
 # Scientific computing

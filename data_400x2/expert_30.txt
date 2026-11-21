@@ -1,0 +1,30 @@
+Philosopher
+Epistemologist
+Aesthetician
+Medievalist
+Legal Theorist
+Economic Historian
+Sociologist
+Computational Biologist
+Theoretical Physicist
+Experimental Physicist
+Plasma Physicist
+Geophysicist
+Ecologist
+Algebraic Topologist
+Complexity Theorist
+Condensed Matter Physicist
+Molecular Biologist
+Astrophysicist
+Planetary Scientist
+Materials Scientist
+Computational Neuroscientist
+Combinatorial Optimization Researcher
+Bioinformatician
+Epigeneticist
+Pharmacogenomicist
+Cognitive Neuroscientist
+Developmental Psychologist
+Social Network Analyst
+Epidemiologist
+Bayesian Statistician

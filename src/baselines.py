@@ -14,16 +14,19 @@ import argparse
 import json
 import pickle
 import sys
+import time
 
 import torch
 
 sys.path.insert(0, ".")
+import timing
 from utils import load_model
 from neural_controllers import NeuralController
 
 
 def train_baselines(dataset_path, out_path, model_name, rfm_iters=8,
-                     n_components=1, batch_size=8, cache_dir=None, seed=0):
+                     n_components=1, batch_size=8, cache_dir=None, seed=0, timings_path=None):
+    """timings_path: optional timing.py JSON; records model load and each method separately."""
     torch.manual_seed(seed)
 
     with open(dataset_path) as f:
@@ -32,10 +35,14 @@ def train_baselines(dataset_path, out_path, model_name, rfm_iters=8,
     train_prompts = [ex["prompt"] for ex in dataset["train"]]
     train_labels = [ex["label"] for ex in dataset["train"]]
 
+    load_start = time.perf_counter()
     language_model, tokenizer = load_model(model_name, cache_dir=cache_dir)
+    if timings_path:
+        timing.record(timings_path, "baselines_model_load", time.perf_counter() - load_start)
 
     results = {}
     for method in ["rfm", "mean_difference"]:
+        method_start = time.perf_counter()
         print(f"\n=== training baseline: {method} (all layers) ===")
         controller = NeuralController(
             language_model, tokenizer,
@@ -55,6 +62,8 @@ def train_baselines(dataset_path, out_path, model_name, rfm_iters=8,
         results[method] = {"directions_per_layer": per_layer_direction,
                             "layers": controller.hidden_layers,
                             "sign": controller.signs}
+        if timings_path:
+            timing.record(timings_path, method, time.perf_counter() - method_start)
 
     with open(out_path, "wb") as f:
         pickle.dump(results, f)

@@ -77,6 +77,11 @@ def train(trajectories_path, out_path, sigma, lam, k, rfm_iters, ell_tau,
         )
         directions_per_layer[layer] = directions.cpu()
         info_per_layer[layer] = info
+        # fit_sequence_rfm moves this layer's trajectories to the GPU in place; drop them so
+        # GPU memory doesn't grow with the number of layers (OOM on Llama-70B: 79 layers x 8192-d).
+        trajectories_per_layer[layer] = None
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
     torch.save({"directions_per_layer": directions_per_layer,
                 "info_per_layer": info_per_layer, "layers": layers,

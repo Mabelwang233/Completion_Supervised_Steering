@@ -32,31 +32,28 @@ def select_concepts(manifest_path, n, seed, key):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--persona_manifest", required=True)
-    p.add_argument("--fear_manifest",    required=True)
+    p.add_argument("--persona_manifest", default=None)
+    p.add_argument("--fear_manifest",    default=None)
+    p.add_argument("--expert_manifest",  default=None)
     p.add_argument("--out_path",         required=True)
     p.add_argument("--n",                type=int, default=10)
     p.add_argument("--seed",             type=int, default=42)
     args = p.parse_args()
 
-    print(f"Selecting {args.n} personas (seed={args.seed})...")
-    personas = select_concepts(args.persona_manifest, args.n, args.seed, "persona")
-
-    print(f"\nSelecting {args.n} fears (seed={args.seed})...")
-    fears = select_concepts(args.fear_manifest, args.n, args.seed, "fear")
-
-    out = {
-        "seed": args.seed,
-        "n_per_category": args.n,
-        "personas": personas,
-        "fears": fears,
-    }
+    out = {"seed": args.seed, "n_per_category": args.n}
+    for key, manifest_path in [("persona", args.persona_manifest),
+                               ("fear", args.fear_manifest),
+                               ("expert", args.expert_manifest)]:
+        if manifest_path:
+            print(f"\nSelecting {args.n} {key}s (seed={args.seed})...")
+            out[f"{key}s"] = select_concepts(manifest_path, args.n, args.seed, key)
 
     os.makedirs(os.path.dirname(args.out_path) or ".", exist_ok=True)
     with open(args.out_path, "w") as f:
         json.dump(out, f, indent=2)
     print(f"\nWrote {args.out_path}")
-    print(f"Total concepts: {len(personas)} personas + {len(fears)} fears = {len(personas)+len(fears)}")
+    print("Total concepts: " + ", ".join(
+        f"{len(v)} {k}" for k, v in out.items() if isinstance(v, list)))
 
 
 if __name__ == "__main__":

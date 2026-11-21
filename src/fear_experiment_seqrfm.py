@@ -62,6 +62,13 @@ def run_one_concept(fear, dataset_path, out_dir, args):
     # ------------------------------------------------------------------
     # Step 1: generate completions (reuse if already present)
     # ------------------------------------------------------------------
+    summary_path = os.path.join(strategy_dir, "summary.csv")
+    if os.path.exists(summary_path):
+        with open(summary_path) as f:
+            if any(r.get("method") == "sequence_rfm" for r in csv.DictReader(f)):
+                print(f"  sequence_rfm rows already in {summary_path}, skipping concept.")
+                return
+
     print(f"\n[1/5] generate completions (max {args.train_completion_tokens} tokens)")
     if not os.path.exists(dataset_with_completions_path):
         generate_completions.generate_completions(
@@ -76,7 +83,7 @@ def run_one_concept(fear, dataset_path, out_dir, args):
     # Step 2: extract trajectories (reuse if already present)
     # ------------------------------------------------------------------
     print(f"\n[2/5] extract trajectories (n_anchors={args.n_anchors})")
-    if not os.path.exists(trajectories_path):
+    if not os.path.exists(trajectories_path) and not (os.path.exists(seqrfm_path) and os.path.exists(bag_of_words_path)):
         extract_trajectories.extract_trajectories(
             dataset_with_completions_path, trajectories_path, args.model, args.layers,
             n_anchors=args.n_anchors, cache_dir=args.cache_dir, seed=args.seed,

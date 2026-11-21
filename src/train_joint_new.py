@@ -258,7 +258,7 @@ def train(args):
     with open(args.dataset) as f:
         dataset = json.load(f)
 
-    concept  = dataset.get("concept") or dataset.get("persona") or dataset.get("fear")
+    concept  = dataset.get("concept") or dataset.get("persona") or dataset.get("fear") or dataset.get("expert")
 
     all_pairs = build_pairs(dataset)
     random.shuffle(all_pairs)
@@ -279,6 +279,10 @@ def train(args):
     val_ds   = PairDataset(val_pairs)
 
     model, tokenizer = load_model(args.model, args.cache_dir)
+    # Only D and the controllers are optimized; without this, backward() allocates
+    # grads for every model weight (Qwen-32B: +64 GB -> OOM).
+    for p in model.parameters():
+        p.requires_grad_(False)
     model.train()
     device   = next(model.parameters()).device
     d        = model.config.hidden_size

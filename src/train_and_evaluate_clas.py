@@ -15,6 +15,7 @@ import csv
 import json
 import os
 import sys
+import time
 
 import torch
 from tqdm import tqdm
@@ -22,12 +23,14 @@ from tqdm import tqdm
 sys.path.insert(0, ".")
 from utils import load_model
 import clas
+import timing
 
 
 def run_one_concept(concept_type, concept_name, dataset_path, dataset_with_completions_path,
                      baseline_path, out_dir, model_name, judge_model="gpt-4o-mini",
                      max_new_tokens=100, val_frac=0.2, lr_weight=3e-3, lr_bias=1e-1,
-                     epochs=8, accum_steps=10, patience=2, cache_dir=None, seed=42):
+                     epochs=8, accum_steps=10, patience=2, cache_dir=None, seed=42,
+                     timings_path=None):
     os.makedirs(out_dir, exist_ok=True)
     clas_path = os.path.join(out_dir, "clas_directions.pt")
 
@@ -35,12 +38,15 @@ def run_one_concept(concept_type, concept_name, dataset_path, dataset_with_compl
 
     print("\n[1/2] train CLAS sensing vectors (freeze LLM, learn c_l per layer)")
     if not os.path.exists(clas_path):
+        start = time.perf_counter()
         clas.train_clas(
             dataset_with_completions_path, baseline_path, clas_path, model_name,
             val_frac=val_frac, lr_weight=lr_weight, lr_bias=lr_bias,
             epochs=epochs, accum_steps=accum_steps, patience=patience,
             cache_dir=cache_dir, seed=seed,
         )
+        if timings_path:
+            timing.record(timings_path, "clas", time.perf_counter() - start)
     else:
         print(f"  {clas_path} exists, skipping.")
 
@@ -60,6 +66,9 @@ def run_one_concept(concept_type, concept_name, dataset_path, dataset_with_compl
     elif concept_type == "topophile":
         from topophile_judge import judge_response
         concept_field = "concept"
+    elif concept_type == "expert":
+        from expert_judge import judge_response
+        concept_field = "expert"
     else:
         from fear_judge import judge_response
         concept_field = "fear"
@@ -103,6 +112,8 @@ def main(args):
         field = "persona"
     elif args.concept_type == "topophile":
         field = "concept"
+    elif args.concept_type == "expert":
+        field = "expert"
     else:
         field = "fear"
 
@@ -134,6 +145,7 @@ def main(args):
             lr_weight=args.lr_weight, lr_bias=args.lr_bias, epochs=args.epochs,
             accum_steps=args.accum_steps, patience=args.patience,
             cache_dir=args.cache_dir, seed=args.seed,
+            timings_path=os.path.join(concept_out_dir, "timings.json"),
         )
         all_summaries.append(os.path.join(clas_out_dir, "summary.csv"))
 
@@ -155,7 +167,7 @@ def main(args):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--concept_type", required=True, choices=["persona", "fear", "topophile"])
+    p.add_argument("--concept_type", required=True, choices=["persona", "fear", "topophile", "expert"])
     p.add_argument("--manifest_path", required=True)
     p.add_argument("--model", required=True)
     p.add_argument("--output_dir", required=True)

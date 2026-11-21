@@ -62,6 +62,15 @@ def split_train_states(inputs, train_indices, val_indices):
     return train_inputs, val_inputs
 
 def load_model(model, cache_dir=None):
+    # A model loaded by an earlier pipeline step can survive its function's return
+    # (reference cycles via hooks), and freed memory stays in PyTorch's cache. Either
+    # way device_map="auto" sees a full GPU and silently offloads the new copy to CPU
+    # (Qwen-32B: 6 h generation, then OOM). Free both before loading.
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
     if model=='llama_3_8b_it':
         model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
         language_model = AutoModelForCausalLM.from_pretrained(
@@ -72,8 +81,11 @@ def load_model(model, cache_dir=None):
         
     elif model=='llama_3.3_70b_4bit_it':
         model_id = "unsloth/Llama-3.3-70B-Instruct-bnb-4bit"
+        # LLAMA70B_BF16=1: load non-quantized parts (embeddings, norms, lm_head) in bf16
+        # instead of bnb's fp16 default, so activations are bf16 like the 8B runs.
+        extra = {"torch_dtype": torch.bfloat16} if os.environ.get("LLAMA70B_BF16") == "1" else {}
         language_model = AutoModelForCausalLM.from_pretrained(
-            model_id, device_map="auto", cache_dir=cache_dir
+            model_id, device_map="auto", cache_dir=cache_dir, **extra
         )   
         use_fast_tokenizer = "LlamaForCausalLM" not in language_model.config.architectures
         tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=use_fast_tokenizer, padding_side="left", legacy=False, cache_dir=cache_dir)
@@ -116,9 +128,10 @@ def load_model(model, cache_dir=None):
         tokenizer = AutoTokenizer.from_pretrained("t5-large", cache_dir=cache_dir)
         language_model = AutoModelForSeq2SeqLM.from_pretrained("lmsys/toxicchat-t5-large-v1.0", cache_dir=cache_dir).to("cuda")
 
-    elif model in ('Qwen/Qwen2.5-7B-Instruct', 'qwen2.5_7b_it'):
-        # Qwen2.5-7B-Instruct: bfloat16, preserve the tokenizer's own pad token.
-        model_id = "Qwen/Qwen2.5-7B-Instruct"
+    elif model in ('Qwen/Qwen2.5-7B-Instruct', 'qwen2.5_7b_it', 'Qwen/Qwen2.5-32B-Instruct'):
+        # Qwen2.5-{7B,32B}-Instruct: bfloat16, preserve the tokenizer's own pad token.
+        # (32B in fp32 would be ~130 GB, so it must not hit the fallback below.)
+        model_id = "Qwen/Qwen2.5-7B-Instruct" if model == 'qwen2.5_7b_it' else model
         tokenizer = AutoTokenizer.from_pretrained(
             model_id, padding_side="left", cache_dir=cache_dir
         )
@@ -149,7 +162,14 @@ def load_model(model, cache_dir=None):
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = 0
     print(f"Setting pad token id to: {tokenizer.pad_token_id}")
-    
+
+    # Fail fast instead of running for hours with layers offloaded to CPU.
+    offloaded = {k: v for k, v in getattr(language_model, "hf_device_map", {}).items()
+                 if v in ("cpu", "disk")}
+    if offloaded:
+        raise RuntimeError(f"load_model: {len(offloaded)} modules offloaded to CPU/disk "
+                           f"(GPU not free?): {list(offloaded)[:5]}")
+
     return language_model, tokenizer
 
 

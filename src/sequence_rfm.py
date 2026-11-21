@@ -157,7 +157,9 @@ def fit_sequence_rfm(trajectories, labels, sigma=1.0, lam=1e-3, k=1,
     n = len(trajectories)
     y = labels.float().to(device)
     for t in trajectories:
-        t["h"] = t["h"].to(device)
+        # bf16/fp16 trajectories (e.g. Llama-70B with LLAMA70B_BF16=1): fit in fp32
+        # (linalg.solve/svd don't support bf16); no-op for fp32 trajectories.
+        t["h"] = t["h"].to(device).float()
         t["tau"] = t["tau"].to(device)
 
     M_eigvecs, M_eigvals = None, None

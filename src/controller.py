@@ -115,6 +115,10 @@ class SequenceRFMController(nn.Module):
         # model dtype (bfloat16 for Qwen/Llama loaded with torch_dtype=bfloat16).
         if dtype is None:
             dtype = next(iter(directions_per_layer.values())).dtype
+        # fp16 models (e.g. bnb 4-bit Llama-70B): fp16 params under AdamW give NaN
+        # from step 1 (eps=1e-8 underflows), so keep the controller in fp32.
+        if dtype == torch.float16:
+            dtype = torch.float32
         self._dtype = dtype
 
         # Frozen subspaces, registered as buffers (not parameters) so
@@ -159,9 +163,9 @@ class SequenceRFMController(nn.Module):
                 hidden = output
                 rest = None
 
-            alpha = C(hidden)                    # (batch, seq, k)
+            alpha = C(hidden.to(D.dtype))        # (batch, seq, k)
             delta = alpha @ D.t()                # (batch, seq, d)
-            steered = hidden + delta
+            steered = hidden + delta.to(hidden.dtype)
             self._last_alphas[layer] = alpha.detach()
 
             if rest is not None:

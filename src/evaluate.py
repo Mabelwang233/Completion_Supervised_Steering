@@ -38,6 +38,8 @@ try:
 except ImportError:
     print("WARNING: persona_judge.py not found -- falling back to fear_judge for personas.")
     persona_judge_response = fear_judge_response
+from expert_judge import judge_response as expert_judge_response
+from topophile_judge import judge_response as topophile_judge_response
 
 def format_chat(tokenizer, prompt_text):
     """Format a user prompt using the tokenizer's own chat template.
@@ -126,16 +128,18 @@ def main():
 
     with open(args.dataset) as f:
         dataset = json.load(f)
-    concept      = dataset.get("concept") or dataset.get("persona") or dataset.get("fear")
-    concept_type = dataset.get("type", "persona" if "persona" in dataset else "fear")
+    concept      = dataset.get("concept") or dataset.get("persona") or dataset.get("fear") or dataset.get("expert")
+    concept_type = dataset.get("type") or next(t for t in ("persona", "expert", "fear") if t in dataset)
     slug         = concept.lower().replace(" ", "_")
     test_examples = dataset["test"]
 
     # Select judge based on concept type
-    if concept_type == "persona":
-        judge_fn = persona_judge_response
-    else:
-        judge_fn = fear_judge_response
+    judge_fn = {
+        "persona": persona_judge_response,
+        "expert": expert_judge_response,
+        "fear": fear_judge_response,
+        "topophile": topophile_judge_response,
+    }[concept_type]
 
     print(f"Concept: {concept}  |  type: {concept_type}  |  judge: {concept_type}_judge")
 

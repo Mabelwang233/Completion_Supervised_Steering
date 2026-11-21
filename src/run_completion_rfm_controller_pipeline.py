@@ -42,14 +42,18 @@ import argparse
 import csv
 import json
 import os
+import time
 
 import completion_rfm
+import timing
+from timing import timed
 import completion_rfm_to_pt
 import train_controller
 
 CONCEPT_CONFIG = {
     "fear": {"manifest_key": "fear", "dir_prefix": "fear"},
     "persona": {"manifest_key": "persona", "dir_prefix": "persona"},
+    "expert": {"manifest_key": "expert", "dir_prefix": "expert"},
 }
 
 
@@ -68,16 +72,26 @@ def run_one(concept_name, dataset_path, old_strategy_dir, new_strategy_dir, args
     pt_path = os.path.join(new_strategy_dir, "completion_rfm_directions.pt")
     controller_path = os.path.join(new_strategy_dir, "controller.pt")
     eval_dir = os.path.join(new_strategy_dir, "eval")
+    # training-time wall clock, merged into the concept's timings.json (evaluation not timed)
+    timings_path = os.path.join(os.path.dirname(old_strategy_dir), "timings.json")
 
     print(f"\n--- {concept_name}  method=completion_rfm  k=1 ---")
 
     print("[1/3] train completion-RFM (x,z last token)")
+    # reuse the completion-RFM already trained by {expert,fear,persona}_experiment.py
+    # (same completions / rfm_iters / seed) instead of retraining it
+    old_pkl_path = os.path.join(old_strategy_dir, "completion_rfm_directions.pkl")
+    if not os.path.exists(pkl_path) and os.path.exists(old_pkl_path):
+        import shutil
+        shutil.copy2(old_pkl_path, pkl_path)
+        print(f"  copied existing {old_pkl_path} -> {pkl_path}")
     if not os.path.exists(pkl_path):
-        completion_rfm.train_completion_rfm(
-            completions_path, pkl_path, args.model,
-            rfm_iters=args.rfm_iters, n_components=1, batch_size=args.rfm_batch_size,
-            cache_dir=args.cache_dir, seed=args.seed,
-        )
+        with timed(timings_path, "ctx_ctrl_completion_rfm"):
+            completion_rfm.train_completion_rfm(
+                completions_path, pkl_path, args.model,
+                rfm_iters=args.rfm_iters, n_components=1, batch_size=args.rfm_batch_size,
+                cache_dir=args.cache_dir, seed=args.seed,
+            )
     else:
         print(f"  {pkl_path} exists, skipping.")
 
@@ -88,6 +102,7 @@ def run_one(concept_name, dataset_path, old_strategy_dir, new_strategy_dir, args
 
     print("[2/3] train controller (k=1)")
     if not os.path.exists(controller_path):
+        controller_start = time.perf_counter()
         directions_per_layer = train_controller.load_directions_for_k(pt_path, k=1)
         language_model, tokenizer = train_controller.load_model(args.model, cache_dir=args.cache_dir)
         d_model = language_model.config.hidden_size
@@ -111,11 +126,21 @@ def run_one(concept_name, dataset_path, old_strategy_dir, new_strategy_dir, args
             "dataset_with_completions_path": completions_path,
             "model_dtype": str(language_model.dtype),
         }, controller_path)
+        timing.record(timings_path, "ctx_ctrl_controller", time.perf_counter() - controller_start)
         print(f"  wrote {controller_path}  (best_epoch={best_epoch}, best_val_loss={best_val_loss:.4f})")
+        # Release the training copy so the eval step's load_model gets a free GPU.
+        del language_model, tokenizer, controller
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
     else:
         print(f"  {controller_path} exists, skipping.")
 
     print("[3/3] steer + evaluate (k=1)")
+    # summary.csv is written only after every response is judged, so it marks a finished eval
+    if os.path.exists(os.path.join(eval_dir, "summary.csv")):
+        print(f"  {os.path.join(eval_dir, 'summary.csv')} exists, skipping.")
+        return os.path.join(eval_dir, "summary.csv")
     steer_and_evaluate = args.steer_and_evaluate_module
     steer_and_evaluate.run_evaluation(
         dataset_path, controller_path, eval_dir, args.model,
@@ -130,6 +155,8 @@ def main(args):
 
     if args.concept_type == "fear":
         import fear_controller_steer_and_evaluate as steer_and_evaluate_module
+    elif args.concept_type == "expert":
+        import expert_controller_steer_and_evaluate as steer_and_evaluate_module
     else:
         import controller_steer_and_evaluate as steer_and_evaluate_module
     args.steer_and_evaluate_module = steer_and_evaluate_module
@@ -167,7 +194,7 @@ def main(args):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--concept_type", required=True, choices=["fear", "persona"])
+    p.add_argument("--concept_type", required=True, choices=["fear", "persona", "expert"])
     p.add_argument("--manifest_path", required=True)
     p.add_argument("--model", required=True)
     p.add_argument("--old_output_dir", required=True,

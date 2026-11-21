@@ -11,6 +11,7 @@ only ever used for training).
 """
 import argparse
 import csv
+import os
 import json
 import pickle
 import sys
@@ -117,6 +118,8 @@ def generate_steered(language_model, tokenizer, prompt_text, directions_per_laye
         layer: [directions_per_layer[layer].to(language_model.device)]
         for layer in layers
     }
+    # STEER_ALPHA_SCALE: per-model multiplier on alpha (reported alpha labels unchanged)
+    alpha = alpha * float(os.environ.get("STEER_ALPHA_SCALE", "1.0"))
     hooks = generation_utils.hook_model(language_model, directions_for_hook, layers, alpha)
     try:
         with torch.no_grad():
